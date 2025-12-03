@@ -42,6 +42,7 @@ class TrxItem {
                 .input('Change', sql.Decimal(18, 0), data.Change)
                 .input('PaymentMethod', sql.VarChar(50), data.PaymentMethod)
                 .input('Remark', sql.VarChar(50), data.Remark)
+                .input('CreatedBy', sql.VarChar(50), data.CreatedBy)
                 .query(`
                     INSERT INTO TrxItem (
                         TrxID, Department, TrxDate, Quantity,
@@ -50,7 +51,7 @@ class TrxItem {
                     ) VALUES (
                         @TrxID, @Department, @TrxDate, @Quantity,
                         @SubTotal, @TotalPrice, @Cash, @Change,
-                        @PaymentMethod, @Remark
+                        @PaymentMethod, @Remark , @CreatedBy
                     )
                 `);
 
