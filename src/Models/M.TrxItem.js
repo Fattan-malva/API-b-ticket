@@ -1,0 +1,53 @@
+const { sql, getPool } = require('../Config/db');
+
+class TrxItem {
+    static async getTrxItemsByDept(department) {
+        try {
+            const pool = await getPool();
+            const result = await pool.request()
+                .input('department', sql.VarChar, department)
+                .query('SELECT * FROM TrxItem WHERE Department = @department');
+
+            return result.recordset;
+        } catch (error) {
+            console.error('Error fetching transactions by department:', error);
+            throw error;
+        }
+    }
+
+    static async createTrxItem(data) {
+        try {
+            const pool = await getPool();
+
+            const result = await pool.request()
+                .input('TrxID', sql.VarChar(50), data.TrxID)
+                .input('Department', sql.VarChar(50), data.Department)
+                .input('TrxDate', sql.DateTime, data.TrxDate)
+                .input('Quantity', sql.Int, data.Quantity)
+                .input('SubTotal', sql.Decimal(18, 0), data.SubTotal)
+                .input('TotalPrice', sql.Decimal(18, 0), data.TotalPrice)
+                .input('Cash', sql.Decimal(18, 0), data.Cash)
+                .input('Change', sql.Decimal(18, 0), data.Change)
+                .input('PaymentMethod', sql.VarChar(50), data.PaymentMethod)
+                .input('Remark', sql.VarChar(50), data.Remark)
+                .query(`
+                    INSERT INTO TrxItem (
+                        TrxID, Department, TrxDate, Quantity,
+                        SubTotal, TotalPrice, Cash, Change,
+                        PaymentMethod, Remark
+                    ) VALUES (
+                        @TrxID, @Department, @TrxDate, @Quantity,
+                        @SubTotal, @TotalPrice, @Cash, @Change,
+                        @PaymentMethod, @Remark
+                    )
+                `);
+
+            return result.rowsAffected;
+        } catch (error) {
+            console.error('Error inserting TrxItem:', error);
+            throw error;
+        }
+    }
+}
+
+module.exports = TrxItem;

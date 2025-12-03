@@ -6,6 +6,7 @@ const rateLimit = require('express-rate-limit');
 const authRoutes = require('./Routes/R.Auth');
 const itemRoutes = require('./Routes/R.MstItem');
 const taxRoutes = require('./Routes/R.MstTax');
+const trxItemRoutes = require('./Routes/R.TrxItem');
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use(limiter);
 app.use('/b-ticket/auth', authRoutes);
 app.use('/b-ticket/items', itemRoutes);
 app.use('/b-ticket/tax', taxRoutes);
+app.use('/b-ticket/transactions', trxItemRoutes);
 
 // Health check
 app.get('/b-ticket', (req, res) => {

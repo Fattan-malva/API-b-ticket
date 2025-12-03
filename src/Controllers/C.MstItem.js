@@ -11,14 +11,4 @@ const getItemsByDept = async (req, res) => {
     }
 };
 
-const getAllItems = async (req, res) => {
-    try {
-        const items = await MstItem.getAllItems();
-        res.json(items);
-    } catch (error) {
-        console.error('Error fetching all items:', error);
-        res.status(500).json({ message: 'Internal server error' });
-    }
-};
-
-module.exports = { getItemsByDept, getAllItems };
+module.exports = { getItemsByDept };
