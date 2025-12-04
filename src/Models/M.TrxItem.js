@@ -47,7 +47,7 @@ class TrxItem {
                     INSERT INTO TrxItem (
                         TrxID, Department, TrxDate, Quantity,
                         SubTotal, TotalPrice, Cash, Change,
-                        PaymentMethod, Remark
+                        PaymentMethod, Remark , CreatedBy
                     ) VALUES (
                         @TrxID, @Department, @TrxDate, @Quantity,
                         @SubTotal, @TotalPrice, @Cash, @Change,
