@@ -6,7 +6,7 @@ class TrxItem {
             const pool = await getPool();
             const result = await pool.request()
                 .input('department', sql.VarChar, department)
-                .query('SELECT * FROM TrxItem WHERE Department = @department');
+                .query('SELECT * FROM TrxItem WHERE Department = @department ORDER BY TrxDate DESC');
 
             return result.recordset;
         } catch (error) {
