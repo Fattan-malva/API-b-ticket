@@ -17,8 +17,21 @@ class TrxItem {
 
     static async createTrxItem(data) {
         try {
-            const pool = await getPool();
+            // Validasi required fields
+            if (!data.ItemName || data.ItemName.trim() === '') {
+                throw new Error('ItemName is required and cannot be empty');
+            }
             
+            if (!data.TrxID || data.TrxID.trim() === '') {
+                throw new Error('TrxID is required and cannot be empty');
+            }
+            
+            if (!data.Department || data.Department.trim() === '') {
+                throw new Error('Department is required and cannot be empty');
+            }
+
+            const pool = await getPool();
+
             // Konversi ke waktu Indonesia (UTC+7)
             let trxDate;
             if (data.TrxDate) {
@@ -35,27 +48,31 @@ class TrxItem {
                 .input('TrxID', sql.VarChar(50), data.TrxID)
                 .input('Department', sql.VarChar(50), data.Department)
                 .input('TrxDate', sql.DateTime, trxDate)
+                .input('ItemName', sql.VarChar(255), data.ItemName)   
+                .input('ItemPrice', sql.Decimal(18, 0), data.ItemPrice)
                 .input('Quantity', sql.Int, data.Quantity)
                 .input('SubTotal', sql.Decimal(18, 0), data.SubTotal)
+                .input('TaxPrice', sql.Decimal(18, 0), data.TaxPrice)
                 .input('TotalPrice', sql.Decimal(18, 0), data.TotalPrice)
                 .input('Cash', sql.Decimal(18, 0), data.Cash)
                 .input('Change', sql.Decimal(18, 0), data.Change)
                 .input('PaymentMethod', sql.VarChar(50), data.PaymentMethod)
-                .input('Remark', sql.VarChar(50), data.Remark)
+                .input('Remark', sql.VarChar(255), data.Remark)
                 .input('CreatedBy', sql.VarChar(50), data.CreatedBy)
                 .query(`
                     INSERT INTO TrxItem (
-                        TrxID, Department, TrxDate, Quantity,
-                        SubTotal, TotalPrice, Cash, Change,
-                        PaymentMethod, Remark , CreatedBy
+                        TrxID, Department, TrxDate, ItemName, Quantity,
+                        ItemPrice, TaxPrice, SubTotal, TotalPrice,
+                        Cash, Change, PaymentMethod, Remark, CreatedBy
                     ) VALUES (
-                        @TrxID, @Department, @TrxDate, @Quantity,
-                        @SubTotal, @TotalPrice, @Cash, @Change,
-                        @PaymentMethod, @Remark , @CreatedBy
+                        @TrxID, @Department, @TrxDate, @ItemName, @Quantity,
+                        @ItemPrice, @TaxPrice, @SubTotal, @TotalPrice,
+                        @Cash, @Change, @PaymentMethod, @Remark, @CreatedBy
                     )
                 `);
 
             return result.rowsAffected;
+
         } catch (error) {
             console.error('Error inserting TrxItem:', error);
             throw error;
